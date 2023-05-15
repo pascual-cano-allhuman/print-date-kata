@@ -1,0 +1,14 @@
+
+# Node
+node_modules/
+npm-debug.log
+
+
+*.log
+build
+tests_build
+coverage
+
+.DS_Store
+
+ignore
