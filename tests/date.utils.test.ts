@@ -1,5 +1,6 @@
 import * as utils from "../src/date.utils";
-const { printDate, getShortDate, printLine } = utils;
+const { printDate, getShortDate, printLine, DatePrinter } = utils;
+import { Calendar, Printer } from "../src/date.utils";
 
 describe("printDate spies tests", () => {
   let dateSpy: jest.SpyInstance, consoleSpy: jest.SpyInstance;
@@ -24,7 +25,6 @@ describe("printDate spies  collaborators tests", () => {
   let shortDateSpy: jest.SpyInstance, printLineSpy: jest.SpyInstance;
   beforeEach(() => {
     jest.clearAllMocks();
-    const fixedDate = new Date("2021-01-01");
     shortDateSpy = jest.spyOn(utils, "getShortDate").mockImplementation(() => "1/1/2021");
     printLineSpy = jest.spyOn(utils, "printLine").mockImplementation(() => {});
   });
@@ -55,5 +55,26 @@ describe("testing collaborators", () => {
   it("printLine console logs the input", () => {
     printLine("hello");
     expect(consoleSpy).toBeCalledWith("hello");
+  });
+});
+
+describe("DatePrinter", () => {
+  let datePrinter: utils.DatePrinter;
+  let shortDateSpy: jest.SpyInstance, printLineSpy: jest.SpyInstance;
+  beforeEach(() => {
+    jest.clearAllMocks();
+    shortDateSpy = jest.spyOn(Calendar.prototype, "getShortDate").mockImplementation(() => "1/1/2021");
+    printLineSpy = jest.spyOn(Printer.prototype, "printLine").mockImplementation(() => {});
+    const calendar = new utils.Calendar();
+    const printer = new utils.Printer();
+    datePrinter = new DatePrinter(calendar, printer);
+  });
+  it("creates a new date", () => {
+    datePrinter.printDate();
+    expect(shortDateSpy).toHaveBeenCalled();
+  });
+  it("console logs the mocked date", () => {
+    datePrinter.printDate();
+    expect(printLineSpy).toBeCalledWith("1/1/2021");
   });
 });
