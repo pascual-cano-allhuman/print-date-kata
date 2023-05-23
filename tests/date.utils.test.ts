@@ -1,6 +1,6 @@
 import * as utils from "../src/date.utils";
 const { printDate, getShortDate, printLine, DatePrinter } = utils;
-import { Calendar, Printer } from "../src/date.utils";
+import { Calendar, Printer, ICalendar, IPrinter } from "../src/date.utils";
 
 describe("printDate spies tests", () => {
   let dateSpy: jest.SpyInstance, consoleSpy: jest.SpyInstance;
@@ -76,5 +76,35 @@ describe("DatePrinter", () => {
   it("console logs the mocked date", () => {
     datePrinter.printDate();
     expect(printLineSpy).toBeCalledWith("1/1/2021");
+  });
+});
+
+class CalendarFake implements ICalendar {
+  hasBeenCalled = false;
+  getShortDate(): string {
+    this.hasBeenCalled = true;
+    return "1/1/2021";
+  }
+}
+
+class PrinterFake implements IPrinter {
+  linesPrinted: string[] = [];
+  printLine(line: string): void {
+    this.linesPrinted.push(line);
+  }
+}
+
+describe("DatePrinter with custom spies", () => {
+  const calendar = new CalendarFake();
+  const printer = new PrinterFake();
+  const datePrinter = new DatePrinter(calendar, printer);
+
+  it("creates a new date", () => {
+    datePrinter.printDate();
+    expect(calendar.hasBeenCalled).toBe(true);
+  });
+  it("console logs the mocked date", () => {
+    datePrinter.printDate();
+    expect(printer.linesPrinted[0]).toBe("1/1/2021");
   });
 });

@@ -15,21 +15,29 @@ export const printDate = (): void => {
   printLine(shortDate);
 };
 
-export class Calendar {
+export interface ICalendar {
+  getShortDate(): string;
+}
+
+export interface IPrinter {
+  printLine(line: string): void;
+}
+
+export class Calendar implements ICalendar {
   getShortDate(): string {
     return new Date().toLocaleDateString("en-IE");
   }
 }
 
-export class Printer {
+export class Printer implements IPrinter {
   printLine(line: string): void {
     console.log(line);
   }
 }
 
 export class DatePrinter {
-  calendar: Calendar;
-  printer: Printer;
+  calendar: ICalendar;
+  printer: IPrinter;
   constructor(calendar: Calendar, printer: Printer) {
     this.calendar = calendar;
     this.printer = printer;
